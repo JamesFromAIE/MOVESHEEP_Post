@@ -85,6 +85,8 @@ public class UIManager : MonoBehaviour
         _sheepCount++; // INCREMENT SHEEP COUNT BY ONE
         UpdateUI(); // UPDATE UI TEXT VALUES
 
+        PlayerManager.Instance.AddCapturedSheep(1);
+
         if (_sheepCount >= _maxSheep) GameManager.Instance.UpdateGameState(GameState.Complete); // IF ALL SHEEP ARE CAPTURED, SET GAME STATE TO COMPLETE
     }
 
@@ -96,14 +98,13 @@ public class UIManager : MonoBehaviour
 
         float seconds = Mathf.FloorToInt(timeToDisplay % 60); // MODULATE SECONDS FROM TIME
 
-        _timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds); // UPDATE TIMER TEXT WITH FORMATTED MINUTES AND SECONDS
+        _timerText.text = string.Format("{0:0}:{1:00}", minutes, seconds); // UPDATE TIMER TEXT WITH FORMATTED MINUTES AND SECONDS
     }
 
     public void NextLevel()
     {
         var gM = GameManager.Instance; // SIMPLIFY GAME MANAGER SINGLETON
 
-        gM.IncreaseGameScore(1); // INCREASE GAME SCORE BY 1
         gM.IncreaseAgentCount(5); // INCREASE NUMBER OF AGENTS TO SPAWN BY 5
 
         if (gM.GameScore % 3 == 0) // EVERY 3 ROUNDS...
@@ -119,7 +120,6 @@ public class UIManager : MonoBehaviour
     {
         var gM = GameManager.Instance; // SIMPLIFY GAME MANAGER SINGLETON
 
-        gM.ResetGameScore(); // RESET NUMBER OF CLEARED LEVELS
         gM.ResetAgentCount(); // RESET AGENT COUNT TO SPAWN
 
         ResetStartingTimer(); // RESET STARTING TIMER IN UI
@@ -137,6 +137,11 @@ public class UIManager : MonoBehaviour
     {
         if (_startingTimer > 60) // IF STARTING TIME IS GREATER THAN SIXTY...
             _startingTimer -= value; // REDUCE STARTING TIME BY VALUE
+    }
+
+    public void Pause()
+    {
+        TogglePauseState(GameManager.Instance.State);
     }
 
     public void Quit()

@@ -68,7 +68,11 @@ public class GameManager : MonoBehaviour
                 Time.timeScale = 0f; // STOP TIME
 
                 DogManager.Instance.DisableDogs(); // DISABLE DOGS IN CURRENT SCENE
-                FlockManager.Instance.DisableAgents(); // DISABLE AGENTS IN CURRENT SCENE
+                FlockManager.Instance.DisableAgents(); // DISABLE AGENTS IN CURRENT SCENE 
+
+                IncreaseGameScore(1); // INCREASE GAME SCORE BY 1
+                PlayerManager.Instance.UpdateLongestStreak(GameScore); // CHECK IF THIS SCORE IS THE LONGEST STREAK
+
                 break;
 
             case GameState.Failure: // IN CASE OF FAILURE...
@@ -77,6 +81,8 @@ public class GameManager : MonoBehaviour
 
                 DogManager.Instance.DisableDogs(); // DISABLE DOGS IN CURRENT SCENE
                 FlockManager.Instance.DisableAgents(); // DISABLE AGENTS IN CURRENT SCENE
+
+                ResetGameScore(); // RESET NUMBER OF CLEARED LEVELS
                 break;
         }
     }

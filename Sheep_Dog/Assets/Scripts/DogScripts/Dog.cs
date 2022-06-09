@@ -6,6 +6,9 @@ public class Dog : MonoBehaviour
     [SerializeField] NavMeshAgent _nMAgent; // NAVMESH AGENT COMPONENT
     [SerializeField] MeshRenderer _selectedCircle; // HIGHLIGHTED CIRCLE BENEATH DOG
     public bool IsSelected { get; private set; } = false; // BOOL FOR IF DOG IS CURRENTLY SELECTED
+    public bool IsMoving { get; private set; } = false;
+    float _moveDistance;
+    Vector3 _prevPosition;
     public bool IsSitting { get; private set; } // BOOL FOR IF DOG IS CURRENTLY SITTING
     public DogStates State { get; private set; } = DogStates.Idle; // PUBLIC ENUM FOR DOG STATE
 
@@ -16,7 +19,11 @@ public class Dog : MonoBehaviour
 
     #region Public Methods
 
-    void Start() => idlePos = transform.position;
+    void Start()
+    {
+        idlePos = transform.position;
+        _prevPosition = transform.position;
+    }
 
     void Update()
     {
@@ -24,6 +31,10 @@ public class Dog : MonoBehaviour
         _nMAgent.speed = 30;
 
         if (IsSelected) return;
+
+        IsMoving = false;
+        PlayerManager.Instance.AddDogDistance(_moveDistance);
+        _moveDistance = 0;
 
         _nMAgent.speed = 5;
 
@@ -56,6 +67,11 @@ public class Dog : MonoBehaviour
         if (Vector3.Distance(transform.position, destination) < 0.3f || GameManager.Instance.State != GameState.Playing)
         {
             _nMAgent.SetDestination(transform.position); // DONT MOVE!!!
+            IsMoving = false;
+
+            //PlayerManager.Instance.AddDogDistance(_moveDistance);
+            //_moveDistance = 0;
+
             ChangeDogState(DogStates.Idle); // DOG IS NOW IDLE
         }
         else
@@ -63,6 +79,16 @@ public class Dog : MonoBehaviour
             _nMAgent.SetDestination(destination); // DOG MOVES IN THIS DIRECTION
             Vector3 lookDir = destination - transform.position; // GET DIRECTION TO LOOK TOWARD DESTINATION
             transform.forward = lookDir.FlattenLookDirection(); // LOOK IN FLATTENED DIRECTION
+            Debug.Log("Set Dog Moving to True");
+            IsMoving = true;
+
+            //_moveDistance += Time.deltaTime;
+
+            var distance = Vector3.Distance(transform.position, _prevPosition);
+            PlayerManager.Instance.AddDogDistance(distance);
+
+            _prevPosition = transform.position;
+
             ChangeDogState(DogStates.Moving); // DOG IS NOW MOVING
         }
         
