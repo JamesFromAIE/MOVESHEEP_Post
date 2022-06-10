@@ -19,6 +19,7 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+
     public int PlayerCurrency { get; private set; }
     public int TotalSheepCaptured { get; private set; }
     public float TotalDogDistance { get; private set; }
@@ -43,4 +44,27 @@ public class PlayerManager : MonoBehaviour
     {
         TotalSheepCaptured += value;
     }
+
+    public void SavePlayer()
+    {
+        SaveSystem.SavePlayer(this);
+    }
+
+    public void ClearPlayer()
+    {
+        SaveSystem.ClearPlayer(this);
+    }
+
+    public void LoadPlayer()
+    {
+        PlayerData data = SaveSystem.LoadPlayer();
+
+        if (data == null) return;
+
+        PlayerCurrency = data.PlayerCurrency;
+        TotalSheepCaptured = data.TotalSheepCaptured;
+        TotalDogDistance = data.TotalDogDistance;
+        LongestStreak = data.LongestStreak;
+    }
+
 }

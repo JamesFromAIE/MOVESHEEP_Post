@@ -73,6 +73,8 @@ public class GameManager : MonoBehaviour
                 IncreaseGameScore(1); // INCREASE GAME SCORE BY 1
                 PlayerManager.Instance.UpdateLongestStreak(GameScore); // CHECK IF THIS SCORE IS THE LONGEST STREAK
 
+                PlayerManager.Instance.SavePlayer(); // SAVE CURRENT PLAYER DATA
+
                 break;
 
             case GameState.Failure: // IN CASE OF FAILURE...
@@ -83,6 +85,8 @@ public class GameManager : MonoBehaviour
                 FlockManager.Instance.DisableAgents(); // DISABLE AGENTS IN CURRENT SCENE
 
                 ResetGameScore(); // RESET NUMBER OF CLEARED LEVELS
+
+                PlayerManager.Instance.SavePlayer(); // SAVE CURRENT PLAYER DATA
                 break;
         }
     }

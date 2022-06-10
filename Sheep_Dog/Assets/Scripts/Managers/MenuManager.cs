@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
@@ -10,15 +11,20 @@ public class MenuManager : MonoBehaviour
 
     public int AgentCount; // VARIABLE TO CONTAIN SPAWN NUMBER
 
-    public GameObject ControlsPage, SettingsPage, BackButton; // VARIABLES CONTAINING UI ELEMENTS FOR MENU PAGES
+    public GameObject ControlsPage, SettingsPage, PlayerPage, BackButton; // VARIABLES CONTAINING UI ELEMENTS FOR MENU PAGES
 
     public Button SoundButton, SFXButton, SoundOffButton, SFXOffButton;
+
+    [Header("Player Data")]
+    public TextMeshProUGUI CurrencyText;
+    public TextMeshProUGUI SheepText, DistanceText, StreakText;
 
     void Start()
     {
         // DISABLE ALL PAGES
         ControlsPage.SetActive(false);
         SettingsPage.SetActive(false);
+        PlayerPage.SetActive(false);
         BackButton.SetActive(false);
 
         ObstacleManager.Instance.GetAndSetFirstLevelLayout();
@@ -27,6 +33,18 @@ public class MenuManager : MonoBehaviour
         DestroyImmediate(obj);
         FlockManager.Instance.SpawnFlock(); // SPAWN NEW FLOCK
         AddButtonListeners();
+        PlayerManager.Instance.LoadPlayer();
+        UpdatePlayerText();
+    }
+
+    void UpdatePlayerText()
+    {
+        PlayerManager pM = PlayerManager.Instance;
+
+        CurrencyText.text = "" + pM.PlayerCurrency;
+        SheepText.text = "" + pM.TotalSheepCaptured;
+        DistanceText.text = "" + pM.TotalDogDistance;
+        StreakText.text = "" + pM.LongestStreak;
     }
 
     void AddButtonListeners()
@@ -57,6 +75,7 @@ public class MenuManager : MonoBehaviour
         // DISPLAY CREDITS ONLY
         ControlsPage.SetActive(false);
         SettingsPage.SetActive(true);
+        PlayerPage.SetActive(false);
         BackButton.SetActive(true);
     }
 
@@ -65,7 +84,24 @@ public class MenuManager : MonoBehaviour
         // DISPLAY CONTROLS ONLY
         ControlsPage.SetActive(true);
         SettingsPage.SetActive(false);
+        PlayerPage.SetActive(false);
         BackButton.SetActive(true);
+    }
+
+    public void ShowPlayerData()
+    {
+        // DISPLAY PLAYER DATA ONLY
+        ControlsPage.SetActive(false);
+        SettingsPage.SetActive(false);
+        PlayerPage.SetActive(true);
+        BackButton.SetActive(true);
+    }
+
+    public void ClearPlayerData()
+    {
+        PlayerManager.Instance.ClearPlayer();
+        PlayerManager.Instance.LoadPlayer();
+        UpdatePlayerText();
     }
 
     public void CloseWindow()
@@ -73,6 +109,7 @@ public class MenuManager : MonoBehaviour
         // DISABLE ALL PAGES
         ControlsPage.SetActive(false);
         SettingsPage.SetActive(false);
+        PlayerPage.SetActive(false);
         BackButton.SetActive(false);
     }
 
